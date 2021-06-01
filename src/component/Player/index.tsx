@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import * as Feather from "react-feather";
 import { useProvider } from "../../contexts/AppContext";
+import { Wrapper, Container } from "./styles";
 
 type ISong = {
   id: string;
@@ -22,8 +23,8 @@ export default function Player({ song }: IProps) {
   });
 
   return (
-    <div className="player d-flex align-items-center  noselect">
-      <footer className="w-100">
+    <Wrapper className="d-flex align-items-center noselect">
+      <Container className="w-100">
         <div className="row">
           <div className="col-3 d-flex align-items-center">
             <div className="cover">
@@ -34,21 +35,20 @@ export default function Player({ song }: IProps) {
               />
             </div>
             <div className="d-flex flex-column text ml-3 mr-3 marquee">
-              <p className="color-default song default-song mb-0 mt-1">
-                Blinding lights
-              </p>
+              <p className="song mb-0 mt-1">Blinding lights</p>
               <p
-                className="color-default song default-author text-nowrap mb-2"
+                className="song default-author text-nowrap mb-2"
                 style={{ overflow: "hidden" }}
               >
                 The weeknd
               </p>
             </div>
             <div
-              className="d-flex icon justify-content-center align-items-center save-song"
+              className="d-flex icon justify-content-center align-items-center"
               id="heart"
-            />
-            <Feather.Heart color="white" width="16" height="24" />
+            >
+              <Feather.Heart color="white" width="16" height="24" />
+            </div>
           </div>
           <div className="col-6 d-flex justify-content-center align-items-center">
             <div className="player-center">
@@ -61,13 +61,13 @@ export default function Player({ song }: IProps) {
                 </button>
                 <button
                   type="button"
-                  className="icon d-flex justify-content-center align-items-center back"
+                  className="icon d-flex justify-content-center align-items-center"
                 >
                   <Feather.ChevronLeft width="18" height="16" strokeWidth="3" />
                 </button>
                 <button
                   type="button"
-                  className="play icon d-flex justify-content-center align-items-center audio-play"
+                  className="play icon d-flex justify-content-center align-items-center"
                   id="playb"
                 >
                   <Feather.PlayCircle
@@ -79,7 +79,7 @@ export default function Player({ song }: IProps) {
                 </button>
                 <button
                   type="button"
-                  className="icon d-flex justify-content-center align-items-center next"
+                  className="icon d-flex justify-content-center align-items-center"
                 >
                   <Feather.ChevronRight
                     width="18"
@@ -89,7 +89,7 @@ export default function Player({ song }: IProps) {
                 </button>
                 <button
                   type="button"
-                  className="icon d-flex justify-content-center align-items-center repeat"
+                  className="icon d-flex justify-content-center align-items-center"
                 >
                   <Feather.Repeat width="16" height="14" />
                 </button>
@@ -97,7 +97,7 @@ export default function Player({ song }: IProps) {
 
               <div className="d-flex align-items-center">
                 <div className="progress-time">
-                  <span className="color-default tempo-atual">0:00</span>
+                  <span className="color-default">0:00</span>
                 </div>
                 <div className="progress w-100">
                   <input
@@ -110,7 +110,7 @@ export default function Player({ song }: IProps) {
                   />
                 </div>
                 <div className="progress-time">
-                  <span className="color-default tempo-final">0:00</span>
+                  <span className="color-default">0:00</span>
                 </div>
               </div>
             </div>
@@ -130,7 +130,7 @@ export default function Player({ song }: IProps) {
             </button>
             <button
               type="button"
-              className="icon-right d-flex justify-content-center align-items-center mute-volume"
+              className="icon-right d-flex justify-content-center align-items-center"
             >
               <Feather.Volume2 width="16" />
             </button>
@@ -150,7 +150,7 @@ export default function Player({ song }: IProps) {
             </div>
           </div>
         </div>
-      </footer>
-    </div>
+      </Container>
+    </Wrapper>
   );
 }
