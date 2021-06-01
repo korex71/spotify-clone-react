@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import * as Feather from "react-feather";
-import { useProvider } from "../../contexts/AppContext";
+import { AppContext } from "../../contexts/AppContext";
 import { Wrapper, Container } from "./styles";
 
 type ISong = {
@@ -14,13 +14,13 @@ interface IProps {
 }
 
 export default function Player({ song }: IProps) {
-  const { hello } = useProvider();
+  const { searchResults } = useContext(AppContext);
   const [sliderValue, setSliderValue] = useState("0");
   const [volume, setVolume] = useState("100");
 
   useEffect(() => {
-    console.log(hello);
-  });
+    console.log(searchResults);
+  }, [searchResults]);
 
   return (
     <Wrapper className="d-flex align-items-center noselect">

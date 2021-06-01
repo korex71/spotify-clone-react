@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   NavLink,
 } from "react-router-dom";
-import "./App.global.css";
+
+import { useProvider } from "./contexts/AppContext";
+
 import * as Feather from "react-feather";
+import GlobalStyle from "./App.global";
 
 import Player from "./component/Player";
 import Home from "./pages/Home";
@@ -14,24 +17,24 @@ import Library from "./pages/Library";
 import Search from "./pages/Search";
 
 export default function App() {
-  const [inputSearch, setInputSearch] = useState("");
+  const { inputSearch, handleSearch, setInputSearch } = useProvider();
+
   const [songInfo, setSongInfo] = useState({
     id: "",
     title: "",
     url: "",
   });
 
-  function handleSearch() {
-    // AXIOS
-    console.log(inputSearch);
+  function getSongInfo() {
+    setSongInfo({ id: "xx", title: "x", url: "stg" });
   }
 
   return (
     <>
+      <GlobalStyle />
       <Router>
         <nav className="nav-bar d-flex flex-column">
           <div className="nav-bar-header d-flex pl-4 pt-4 pb-4 ">
-            {/* <h4 className="text-success noselect">Electron Music</h4> */}
             <svg viewBox="0 0 1134 340" className="spotify-logo">
               <title>Spotify</title>
               <path
