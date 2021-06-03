@@ -1,15 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   NavLink,
+  useRouteMatch,
+  useLocation,
 } from "react-router-dom";
+import { TransitionGroup, CSSTransition } from "react-transition-group";
+import { Modal } from "libreact";
 
 import { useProvider } from "./contexts/AppContext";
 
 import * as Feather from "react-feather";
-import GlobalStyle from "./App.global";
+import GlobalStyle, { SearchWrapper } from "./App.global";
 
 import Player from "./component/Player";
 import Home from "./pages/Home";
@@ -18,6 +22,7 @@ import Search from "./pages/Search";
 
 export default function App() {
   const { inputSearch, handleSearch, setInputSearch } = useProvider();
+  let location = useLocation();
 
   const [songInfo, setSongInfo] = useState({
     id: "",
@@ -52,7 +57,7 @@ export default function App() {
                 className="nav-link d-flex align-items-center"
                 exact
               >
-                <div className="icon home-icon NavBar__icon">
+                <div>
                   <svg
                     viewBox="0 0 512 512"
                     width="24"
@@ -74,7 +79,7 @@ export default function App() {
                 activeClassName="active"
                 className="nav-link d-flex align-items-center"
               >
-                <div className="icon search-icon NavBar__icon">
+                <div>
                   <Feather.Search width="24" height="24" />
                 </div>
                 <span>Buscar</span>
@@ -86,7 +91,7 @@ export default function App() {
                 activeClassName="active"
                 className="nav-link d-flex align-items-center"
               >
-                <div className="icon collection-active-icon NavBar__icon">
+                <div>
                   <svg
                     viewBox="0 0 512 512"
                     width="24"
@@ -167,15 +172,16 @@ export default function App() {
               >
                 <Feather.ChevronRight />
               </button>
-              <input
-                value={inputSearch}
-                onChange={(e) => setInputSearch(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                className="ml-3 custom-search"
-                type="text"
-                placeholder="Artistas, músicas ou podcasts"
-              />
-              <Feather.Search width="16" height="16" />
+              <SearchWrapper active={true}>
+                <Feather.Search width="22" strokeWidth="1" />
+                <input
+                  value={inputSearch}
+                  onChange={(e) => setInputSearch(e.target.value)}
+                  onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+                  type="text"
+                  placeholder="Artistas, músicas ou podcasts"
+                />
+              </SearchWrapper>
             </div>
             <div className="d-flex ml-auto">
               <div className="dropdown menu ml-3">
@@ -209,11 +215,19 @@ export default function App() {
           <div className="margin-top" />
 
           <div className="main-container">
-            <Switch>
-              <Route path="/" component={Home} exact />
-              <Route path="/library" component={Library} />
-              <Route path="/search" component={Search} />
-            </Switch>
+            <TransitionGroup>
+              <CSSTransition
+                key={location.key}
+                classNames="fade"
+                timeout={3100}
+              >
+                <Switch>
+                  <Route path="/" component={Home} exact />
+                  <Route path="/library" component={Library} />
+                  <Route path="/search" component={Search} />
+                </Switch>
+              </CSSTransition>
+            </TransitionGroup>
           </div>
         </div>
         <Player song={songInfo} />

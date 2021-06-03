@@ -6,35 +6,15 @@ import React, {
   useState,
   useContext,
 } from "react";
-
+import { Video } from "ytsr";
 import api from "../api/config";
 interface IContextData {
   inputSearch: string;
   setInputSearch: Dispatch<SetStateAction<string>>;
-  searchResults: ISearchResults[];
+  searchResults: Video[];
   handleSearch: () => void;
-}
-
-interface ISearchResults {
-  title: string;
-  type: string;
-  thumbnails: Array<Object>;
-  bestThumbnail?: {
-    url: string;
-    width: number;
-    height: number;
-  };
-  id: string;
-  author: {
-    avatars: Array<Object>;
-    bestAvatar?: { url: string };
-    name: string;
-    channelID: string;
-  };
-  isLive?: boolean;
-  duration?: string;
-  uploadedAt?: string;
-  views: number;
+  selectedSong: Video;
+  setSelectedSong: Dispatch<SetStateAction<Video>>;
 }
 interface IProps {
   children: ReactNode;
@@ -45,6 +25,7 @@ export const AppContext = createContext({} as IContextData);
 export default function ContextProvider({ children }: IProps) {
   const [inputSearch, setInputSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [selectedSong, setSelectedSong] = useState<Video>({} as Video);
 
   function handleSearch() {
     if (!inputSearch) return;
@@ -63,6 +44,8 @@ export default function ContextProvider({ children }: IProps) {
         setInputSearch,
         searchResults,
         handleSearch,
+        selectedSong,
+        setSelectedSong,
       }}
     >
       {children}

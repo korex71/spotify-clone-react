@@ -1,4 +1,10 @@
-import { createGlobalStyle } from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
+
+interface IActiveProps {
+  active: boolean;
+}
+
+type IActive = boolean;
 
 export default createGlobalStyle`
 body {
@@ -443,4 +449,26 @@ hr {
   user-select: none;
 }
 
+`;
+
+export const SearchWrapper = styled.div<IActiveProps>`
+  background-color: white;
+  border-radius: 12px;
+  margin-left: 2em;
+  display: ${(props: IActiveProps) => (props.active ? "flex" : "none")};
+  width: 20em;
+
+  svg {
+    margin-left: 8px;
+    margin-top: 4px;
+    color: #525252;
+  }
+
+  input {
+    flex: 1;
+    padding-left: 5px;
+    padding: 5px 12px;
+    border: 0;
+    border-radius: 12px;
+  }
 `;
