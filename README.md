@@ -1,1 +1,1 @@
-<img url="./showcase/app.png">
+![App](./showcase/app.png?raw=true)
