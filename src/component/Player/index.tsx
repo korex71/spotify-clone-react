@@ -55,6 +55,12 @@ export default function Player({ song }: IProps) {
 
   useEffect(() => {
     setCurrentTime(secondsToMinutes(state.time));
+    let percent = (state.time / state.duration) * 100;
+    setSliderBg({
+      background: `linear-gradient( to right, var(--green) ${percent}%, 
+      var(--green) ${percent}%, 
+      rgb(76,76,76) ${percent}%, rgb(76,76,76) ${percent}% )`,
+    });
   }, [state.time]);
 
   useEffect(() => {
@@ -98,6 +104,7 @@ export default function Player({ song }: IProps) {
   };
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    controls.seek(e.target.valueAsNumber);
     setSliderValue(e.target.value);
     setSliderBg({
       background: `linear-gradient( to right, var(--green) ${e.target.value}%, 
@@ -129,7 +136,7 @@ export default function Player({ song }: IProps) {
         <div className="row">
           <div className="col-3 d-flex align-items-center">
             <div className="cover">
-              <img src={thumbnail} alt="cover" width="64" />
+              {thumbnail && <img src={thumbnail} alt="cover" width="64" />}
             </div>
             <div className="d-flex flex-column text ml-3 mr-3 marquee">
               <p className="song mb-0 mt-1">{bestSongInfo.title}</p>
@@ -202,9 +209,10 @@ export default function Player({ song }: IProps) {
                     type="range"
                     id="range-time"
                     onChange={(e) => handleSeek(e)}
-                    value={sliderValue}
+                    style={sliderBg}
+                    value={state.time}
                     min="0"
-                    max="100"
+                    max={state.duration}
                   />
                 </div>
                 <div className="progress-time">
