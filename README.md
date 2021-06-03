@@ -1,1 +1,1 @@
-<img url="/showcase/app.png">
+<img url="./showcase/app.png">
