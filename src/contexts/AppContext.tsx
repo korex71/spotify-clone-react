@@ -5,8 +5,9 @@ import React, {
   SetStateAction,
   useState,
   useContext,
+  useEffect,
 } from "react";
-import { useAudio } from "react-use";
+import { useAudio, useEffectOnce } from "react-use";
 import {
   HTMLMediaControls,
   HTMLMediaProps,
@@ -49,6 +50,7 @@ export default function ContextProvider({ children }: IProps) {
   const [selectedSong, setSelectedSong] = useState<ISearchData>(
     {} as ISearchData
   );
+  const [storageSong, setStorageSong] = useState({} as ISearchData);
   const [audio, state, controls, ref] = useAudio({
     src: `${API_URL}/audio/${selectedSong.youtubeId}`,
     autoPlay: true,
@@ -65,6 +67,27 @@ export default function ContextProvider({ children }: IProps) {
     console.log(inputSearch);
   }
 
+  useEffect(() => {
+    if (!storageSong) return;
+    if (selectedSong.youtubeId === storageSong.youtubeId) {
+      controls.pause();
+    }
+  }, [storageSong, selectedSong.youtubeId, controls]);
+
+  useEffectOnce(() => {
+    const song = localStorage.getItem("@App:song");
+    if (song) {
+      console.log("Loading song from localStorage");
+      try {
+        const json = JSON.parse(song);
+        setSelectedSong(json);
+        setStorageSong(json);
+      } catch (error) {
+        console.warn(error);
+      }
+    }
+  });
+
   return (
     <AppContext.Provider
       value={{
@@ -80,6 +103,7 @@ export default function ContextProvider({ children }: IProps) {
         ref,
       }}
     >
+      {audio}
       {children}
     </AppContext.Provider>
   );

@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useContext } from "react";
 import * as Feather from "react-feather";
+import { Redirect } from "react-router";
 import { AppContext } from "../../contexts/AppContext";
 import { Wrapper, Container } from "./styles";
 
 export default function Player() {
-  const { searchResults, selectedSong, state, controls, audio } =
+  const { searchResults, selectedSong, state, controls } =
     useContext(AppContext);
-  // const [sliderValue, setSliderValue] = useState("0");
   const [currentTime, setCurrentTime] = useState("0:00");
 
   const [volumeBg, setVolumeBg] = useState({});
@@ -17,6 +17,7 @@ export default function Player() {
 
   useEffect(() => {
     console.log(searchResults);
+    <Redirect to="/search" />;
   }, [searchResults]);
 
   useEffect(() => {
@@ -38,6 +39,7 @@ export default function Player() {
     if (!selectedSong) return;
 
     document.title = selectedSong.title;
+    localStorage.setItem("@App:song", JSON.stringify(selectedSong));
     console.log(selectedSong.youtubeId);
   }, [selectedSong]);
 
@@ -88,8 +90,6 @@ export default function Player() {
 
   return (
     <Wrapper className="d-flex align-items-center noselect">
-      {audio}
-
       <Container className="w-100">
         <div className="row">
           <div className="col-3 d-flex align-items-center">

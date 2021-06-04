@@ -7,7 +7,7 @@ type SearchSongProps = { item: ISearchData };
 
 function SearchSongItem({ item }: SearchSongProps) {
   const { selectedSong, setSelectedSong } = useContext(AppContext);
-  const time = item.duration.totalSeconds == null ? "" : item.duration.label;
+  const time = !item.duration.totalSeconds ? "" : item.duration.label;
   const handleClick = () => {
     if (item.youtubeId === selectedSong.youtubeId) {
       //pause / play
