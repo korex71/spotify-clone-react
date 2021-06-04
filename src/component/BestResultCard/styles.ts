@@ -24,9 +24,19 @@ export const Container = styled.div`
     position: absolute;
     top: 70%;
     left: 85%;
-    background: #28a745;
+    color: #fff;
+    background-color: #1db954;
     border-radius: 50%;
-    padding: 0.6em;
+    border: none;
+    height: 40px;
+    width: 40px;
+    padding: 0;
+    font-size: 12px;
+
+    svg {
+      margin-left: 10px;
+      margin-top: 8px;
+    }
   }
 
   .song-image {

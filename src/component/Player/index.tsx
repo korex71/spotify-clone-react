@@ -3,13 +3,14 @@ import * as Feather from "react-feather";
 // import { Redirect } from "react-router";
 import { AppContext, ISearchData } from "../../contexts/AppContext";
 import { Wrapper, Container } from "./styles";
+import { secondsToMinutes } from "../../helpers";
 import api from "../../api/config";
 
 export default function Player() {
   const { searchResults, selectedSong, setSelectedSong, state, controls, ref } =
     useContext(AppContext);
-  const [currentTime, setCurrentTime] = useState("0:00");
 
+  const [currentTime, setCurrentTime] = useState("0:00");
   const [volumeBg, setVolumeBg] = useState({});
   const [sliderBg, setSliderBg] = useState({});
   const [duration, setDuration] = useState("");
@@ -109,14 +110,6 @@ export default function Player() {
 
   const toggleSong = () => {
     state.paused ? controls.play() : controls.pause();
-  };
-
-  const secondsToMinutes = (time: number) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    const formatedSeconds = seconds < 10 ? "0" + seconds : seconds;
-
-    return `${minutes}:${formatedSeconds}`;
   };
 
   return (
