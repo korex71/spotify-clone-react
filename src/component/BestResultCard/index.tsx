@@ -7,7 +7,6 @@ type SearchSongProps = { item: ISearchData };
 
 function SearchSongItem({ item }: SearchSongProps) {
   const { selectedSong, setSelectedSong } = useContext(AppContext);
-  const time = item.duration.totalSeconds == null ? "" : item.duration.label;
   const handleClick = () => {
     if (item.youtubeId === selectedSong.youtubeId) {
       //pause / play
@@ -15,26 +14,19 @@ function SearchSongItem({ item }: SearchSongProps) {
       setSelectedSong(item);
     }
   };
-  const thumbnail = item.thumbnailUrl || "";
 
   return (
-    <Container onClick={() => handleClick()}>
+    <Container onClick={() => handleClick()} className="col-3">
       <div className="song-image">
-        {item.youtubeId === selectedSong.youtubeId ? (
-          <Feather.Pause fill="white" width="15" style={{ display: "block" }} />
-        ) : (
-          ""
-        )}
-        <img src={thumbnail} alt="Thumbnail" width="45" height="45" />
+        <img src={item.thumbnailUrl} alt="Thumbnail" height="95" width="95" />
       </div>
       <div className="song-info">
-        <span title="song-title">{item.title}</span>
+        <h3 title="song-title">{item.title}</h3>
         <span className="song-author">{item.artist}</span>
       </div>
-      <div className="song-like">
-        <Feather.Heart width="16" strokeWidth="1" />
+      <div className="song-play">
+        <Feather.Play width="20" fill="white" />
       </div>
-      <span className="song-duration">{time}</span>
     </Container>
   );
 }

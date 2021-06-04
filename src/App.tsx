@@ -1,16 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext } from "react";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   NavLink,
-  useRouteMatch,
-  useLocation,
 } from "react-router-dom";
-import { TransitionGroup, CSSTransition } from "react-transition-group";
-import { Modal } from "libreact";
 
-import { useProvider } from "./contexts/AppContext";
+import { AppContext } from "./contexts/AppContext";
 
 import * as Feather from "react-feather";
 import GlobalStyle, { SearchWrapper } from "./App.global";
@@ -21,18 +17,8 @@ import Library from "./pages/Library";
 import Search from "./pages/Search";
 
 export default function App() {
-  const { inputSearch, handleSearch, setInputSearch } = useProvider();
-  let location = useLocation();
-
-  const [songInfo, setSongInfo] = useState({
-    id: "",
-    title: "",
-    url: "",
-  });
-
-  function getSongInfo() {
-    setSongInfo({ id: "xx", title: "x", url: "stg" });
-  }
+  const { inputSearch, handleSearch, setInputSearch, selectedSong } =
+    useContext(AppContext);
 
   return (
     <>
@@ -215,22 +201,14 @@ export default function App() {
           <div className="margin-top" />
 
           <div className="main-container">
-            <TransitionGroup>
-              <CSSTransition
-                key={location.key}
-                classNames="fade"
-                timeout={3100}
-              >
-                <Switch>
-                  <Route path="/" component={Home} exact />
-                  <Route path="/library" component={Library} />
-                  <Route path="/search" component={Search} />
-                </Switch>
-              </CSSTransition>
-            </TransitionGroup>
+            <Switch>
+              <Route path="/" component={Home} exact />
+              <Route path="/library" component={Library} />
+              <Route path="/search" component={Search} />
+            </Switch>
           </div>
         </div>
-        <Player song={songInfo} />
+        {selectedSong.youtubeId && <Player />}
       </Router>
     </>
   );

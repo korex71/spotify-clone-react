@@ -4,8 +4,6 @@ interface IActiveProps {
   active: boolean;
 }
 
-type IActive = boolean;
-
 export default createGlobalStyle`
 body {
   background-color: #121212;

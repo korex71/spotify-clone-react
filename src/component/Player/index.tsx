@@ -1,53 +1,19 @@
 import React, { useEffect, useState, useContext } from "react";
 import * as Feather from "react-feather";
-import api from "../../api/config";
 import { AppContext } from "../../contexts/AppContext";
 import { Wrapper, Container } from "./styles";
-import { useAudio } from "react-use";
-import { API_URL } from "../../api/config";
-import { relatedVideo, VideoDetails } from "ytdl-core";
 
-type ISong = {
-  id: string;
-  title: string;
-  url: string;
-};
-
-type ISongInfo = {
-  author: string;
-  formats: [{}];
-  title: string;
-  thumbnails: [
-    {
-      url: string;
-      width: number;
-      height: number;
-    }
-  ];
-  related_videos: relatedVideo;
-  url: string;
-  videoDetails: VideoDetails;
-};
-
-interface IProps {
-  song: ISong;
-}
-
-export default function Player({ song }: IProps) {
-  const { searchResults, selectedSong } = useContext(AppContext);
-  const [sliderValue, setSliderValue] = useState("0");
+export default function Player() {
+  const { searchResults, selectedSong, state, controls, audio } =
+    useContext(AppContext);
+  // const [sliderValue, setSliderValue] = useState("0");
   const [currentTime, setCurrentTime] = useState("0:00");
-  const [audio, state, controls, ref] = useAudio({
-    src: `${API_URL}/audio/${selectedSong.id}`,
-    autoPlay: true,
-  });
-  const [bestSongInfo, setBestSongInfo] = useState({} as ISongInfo);
 
   const [volumeBg, setVolumeBg] = useState({});
   const [sliderBg, setSliderBg] = useState({});
   const [duration, setDuration] = useState("");
-  const [thumbnail, setThumbnail] = useState("");
   const [volumeIco, setVolumeIco] = useState(<Feather.Volume2 width="16" />);
+  const [timeValue, setTimeValue] = useState(0);
 
   useEffect(() => {
     console.log(searchResults);
@@ -56,12 +22,13 @@ export default function Player({ song }: IProps) {
   useEffect(() => {
     setCurrentTime(secondsToMinutes(state.time));
     let percent = (state.time / state.duration) * 100;
+    setTimeValue(state.time);
     setSliderBg({
       background: `linear-gradient( to right, var(--green) ${percent}%, 
       var(--green) ${percent}%, 
       rgb(76,76,76) ${percent}%, rgb(76,76,76) ${percent}% )`,
     });
-  }, [state.time]);
+  }, [state.time, state.duration]);
 
   useEffect(() => {
     setDuration(secondsToMinutes(state.duration));
@@ -70,17 +37,8 @@ export default function Player({ song }: IProps) {
   useEffect(() => {
     if (!selectedSong) return;
 
-    api
-      .get(`/${selectedSong.id}`)
-      .then((res) => res.data)
-      .then((data) => {
-        setBestSongInfo(data);
-        document.title = data.title;
-        setThumbnail(data.thumbnails[0].url);
-      })
-      .catch((err) => console.warn(err));
-
-    console.log(selectedSong.id);
+    document.title = selectedSong.title;
+    console.log(selectedSong.youtubeId);
   }, [selectedSong]);
 
   const handleVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,12 +62,15 @@ export default function Player({ song }: IProps) {
   };
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    controls.seek(e.target.valueAsNumber);
-    setSliderValue(e.target.value);
+    const value = e.target.valueAsNumber;
+    const percent = (value / state.duration) * 100;
+
+    controls.seek(value);
+    setTimeValue(value);
     setSliderBg({
-      background: `linear-gradient( to right, var(--green) ${e.target.value}%, 
-      var(--green) ${e.target.value}%, 
-      rgb(76,76,76) ${e.target.value}%, rgb(76,76,76) ${e.target.value}% )`,
+      background: `linear-gradient( to right, var(--green) ${percent}%, 
+      var(--green) ${percent}%, 
+      rgb(76,76,76) ${percent}%, rgb(76,76,76) ${percent}% )`,
     });
   };
 
@@ -117,16 +78,13 @@ export default function Player({ song }: IProps) {
     state.paused ? controls.play() : controls.pause();
   };
 
-  const secondsToMinutes = (time: number) =>
-    isNaN(time)
-      ? ""
-      : Math.floor(time / 60) +
-        ":" +
-        `${
-          Math.floor(time % 60) < 10
-            ? "0" + String(Math.floor(time % 60))
-            : Math.floor(time % 60)
-        }`;
+  const secondsToMinutes = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    const formatedSeconds = seconds < 10 ? "0" + seconds : seconds;
+
+    return `${minutes}:${formatedSeconds}`;
+  };
 
   return (
     <Wrapper className="d-flex align-items-center noselect">
@@ -136,15 +94,15 @@ export default function Player({ song }: IProps) {
         <div className="row">
           <div className="col-3 d-flex align-items-center">
             <div className="cover">
-              {thumbnail && <img src={thumbnail} alt="cover" width="64" />}
+              <img src={selectedSong.thumbnailUrl} alt="cover" width="64" />
             </div>
             <div className="d-flex flex-column text ml-3 mr-3 marquee">
-              <p className="song mb-0 mt-1">{bestSongInfo.title}</p>
+              <p className="song mb-0 mt-1">{selectedSong.title}</p>
               <p
                 className="song default-author text-nowrap mb-2"
                 style={{ overflow: "hidden" }}
               >
-                {bestSongInfo.author}
+                {selectedSong.artist}
               </p>
             </div>
             <div
@@ -175,12 +133,21 @@ export default function Player({ song }: IProps) {
                   id="playb"
                   onClick={() => toggleSong()}
                 >
-                  <Feather.PlayCircle
-                    width="38"
-                    height="38"
-                    strokeWidth="1"
-                    id="play-ico"
-                  />
+                  {state && state.paused ? (
+                    <Feather.PlayCircle
+                      width="38"
+                      height="38"
+                      strokeWidth="1"
+                      id="play-ico"
+                    />
+                  ) : (
+                    <Feather.PauseCircle
+                      width="38"
+                      height="38"
+                      strokeWidth="1"
+                      id="play-ico"
+                    />
+                  )}
                 </button>
                 <button
                   type="button"
@@ -202,7 +169,7 @@ export default function Player({ song }: IProps) {
 
               <div className="d-flex align-items-center">
                 <div className="progress-time">
-                  <span className="color-default">{currentTime}</span>
+                  <span className="color-white">{currentTime}</span>
                 </div>
                 <div className="progress w-100">
                   <input
@@ -210,13 +177,13 @@ export default function Player({ song }: IProps) {
                     id="range-time"
                     onChange={(e) => handleSeek(e)}
                     style={sliderBg}
-                    value={state.time}
+                    value={timeValue}
                     min="0"
                     max={state.duration}
                   />
                 </div>
                 <div className="progress-time">
-                  <span className="color-default">{duration}</span>
+                  <span className="color-white">{duration}</span>
                 </div>
               </div>
             </div>
@@ -231,6 +198,9 @@ export default function Player({ song }: IProps) {
             <button
               type="button"
               className="icon-right d-flex justify-content-center align-items-center"
+              onClick={() => {
+                controls.seek(state.time);
+              }}
             >
               <Feather.Monitor width="16" />
             </button>
