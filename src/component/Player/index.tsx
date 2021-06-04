@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useContext } from "react";
 import * as Feather from "react-feather";
-import { Redirect } from "react-router";
-import { AppContext } from "../../contexts/AppContext";
+// import { Redirect } from "react-router";
+import { AppContext, ISearchData } from "../../contexts/AppContext";
 import { Wrapper, Container } from "./styles";
+import api from "../../api/config";
 
 export default function Player() {
-  const { searchResults, selectedSong, state, controls } =
+  const { searchResults, selectedSong, setSelectedSong, state, controls, ref } =
     useContext(AppContext);
   const [currentTime, setCurrentTime] = useState("0:00");
 
@@ -14,10 +15,17 @@ export default function Player() {
   const [duration, setDuration] = useState("");
   const [volumeIco, setVolumeIco] = useState(<Feather.Volume2 width="16" />);
   const [timeValue, setTimeValue] = useState(0);
+  const [songPlaylist, setSongPlaylist] = useState({} as ISearchData[]);
+
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.onended = () => playNextSong();
+    }
+    console.log(ref);
+  }, [ref]);
 
   useEffect(() => {
     console.log(searchResults);
-    <Redirect to="/search" />;
   }, [searchResults]);
 
   useEffect(() => {
@@ -40,8 +48,31 @@ export default function Player() {
 
     document.title = selectedSong.title;
     localStorage.setItem("@App:song", JSON.stringify(selectedSong));
+
     console.log(selectedSong.youtubeId);
   }, [selectedSong]);
+
+  const playNextSong = () => {
+    if (songPlaylist && Object.keys(songPlaylist).length === 0) {
+      console.log(songPlaylist);
+      // Request for simillar songs and play.
+      api
+        .get(`/simillar/${selectedSong.youtubeId}`)
+        .then((res) => res.data)
+        .then((data) => data.musics)
+        .then((songs) => {
+          const firstSong = songs[0];
+          const list = songs.slice(1);
+          setSongPlaylist(list);
+          setSelectedSong(firstSong);
+        })
+        .catch((err) => console.warn(err));
+    } else {
+      const song = songPlaylist[0];
+      setSongPlaylist(songPlaylist.slice(1));
+      setSelectedSong(song);
+    }
+  };
 
   const handleVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
     controls.volume(e.target.valueAsNumber / 100);
@@ -152,6 +183,7 @@ export default function Player() {
                 <button
                   type="button"
                   className="icon d-flex justify-content-center align-items-center"
+                  onClick={() => playNextSong()}
                 >
                   <Feather.ChevronRight
                     width="18"
