@@ -6,6 +6,23 @@ export const Wrapper = styled.div`
   height: 90px;
   background-color: #282828;
   color: white;
+
+  #playb {
+    align-items: center;
+    background-color: #fff;
+    border: none;
+    color: #000;
+    justify-content: center;
+    position: relative;
+    transition: none 33ms cubic-bezier(0.3, 0, 0.7, 1);
+    transition-property: all;
+    width: 0.8em;
+    min-width: 0.8em;
+    opacity: 1;
+    padding: 10px;
+    border-radius: 50%;
+    height: 0.78em;
+  }
 `;
 
 export const marquee = keyframes`

@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useContext } from "react";
 import * as Feather from "react-feather";
-// import { Redirect } from "react-router";
 import { AppContext, ISearchData } from "../../contexts/AppContext";
 import { Wrapper, Container } from "./styles";
 import { secondsToMinutes } from "../../helpers";
+import * as Icon from "../Icons";
+
 import api from "../../api/config";
 
 export default function Player() {
@@ -23,7 +24,7 @@ export default function Player() {
       ref.current.onended = () => playNextSong();
     }
     console.log(ref);
-  }, [ref]);
+  }, [ref]); //eslint-disable-line
 
   useEffect(() => {
     console.log(searchResults);
@@ -157,21 +158,7 @@ export default function Player() {
                   id="playb"
                   onClick={() => toggleSong()}
                 >
-                  {state && state.paused ? (
-                    <Feather.PlayCircle
-                      width="38"
-                      height="38"
-                      strokeWidth="1"
-                      id="play-ico"
-                    />
-                  ) : (
-                    <Feather.PauseCircle
-                      width="38"
-                      height="38"
-                      strokeWidth="1"
-                      id="play-ico"
-                    />
-                  )}
+                  {state && state.paused ? <Icon.Pause /> : <Icon.Play />}
                 </button>
                 <button
                   type="button"
