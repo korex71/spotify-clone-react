@@ -21,6 +21,7 @@ export default function Player() {
 
   useEffect(() => {
     if (ref.current) {
+      ref.current.autoplay = true;
       ref.current.onended = () => playNextSong();
     }
     console.log(ref);

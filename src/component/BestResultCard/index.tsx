@@ -6,26 +6,37 @@ import { useContext } from "react";
 type SearchSongProps = { item: ISearchData };
 
 function SearchSongItem({ item }: SearchSongProps) {
-  const { selectedSong, setSelectedSong } = useContext(AppContext);
+  const { selectedSong, setSelectedSong, controls, state } = useContext(AppContext);
   const handleClick = () => {
     if (item.youtubeId === selectedSong.youtubeId) {
-      //pause / play
+      state.paused ? controls.play() : controls.pause()
     } else {
       setSelectedSong(item);
     }
   };
 
   return (
-    <Container onClick={() => handleClick()} className="col-3">
+    <Container onClick={() => handleClick()} className="col-sm-10 col-md-7 col-lg-5 col-xl-4">
       <div className="song-image">
         <img src={item.thumbnailUrl} alt="Thumbnail" height="95" width="95" />
       </div>
+      <div className="row">
       <div className="song-info">
         <h3 title="song-title">{item.title}</h3>
-        <span className="song-author">{item.artist}</span>
+        <div className="column">
+          <span className="song-author">{item.artist}</span>
+          <span className="ml-2 badge badge-secondary p-2 px-3">MÚSICA</span>
+        </div>
       </div>
       <div className="song-play">
-        <Feather.Play width="20" fill="white" />
+        {
+          selectedSong.youtubeId === item.youtubeId ?
+            (state.paused
+            ? <Feather.Play width="20" fill="white" />
+            : <Feather.Pause width="20" fill="white" />)
+          : <Feather.Play width="20" fill="white"/>
+        }
+      </div>
       </div>
     </Container>
   );

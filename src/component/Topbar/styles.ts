@@ -6,23 +6,23 @@ interface IActiveProps {
 
 export const SearchWrapper = styled.div<IActiveProps>`
   background-color: white;
-  border-radius: 12px;
+  border-radius: 30px;
   margin-left: 2em;
   display: ${(props: IActiveProps) => (props.active ? "flex" : "none")};
   width: 20em;
 
   svg {
     margin-left: 8px;
-    margin-top: 4px;
+    margin-top: 6px;
     color: #525252;
   }
 
   input {
     flex: 1;
-    padding-left: 5px;
-    padding: 5px 12px;
+    background: transparent;
     border: 0;
-    border-radius: 12px;
+    margin-left: 7px;
+    height: 2.3em;
   }
 `;
 
@@ -30,6 +30,7 @@ export const Bar = styled.div`
   grid-area: main-view;
   height: 60px;
   z-index: 2;
+  background-color: rgba(0, 0, 0, 0.4);
 
   header {
     padding: 16px 48px 16px 32px;

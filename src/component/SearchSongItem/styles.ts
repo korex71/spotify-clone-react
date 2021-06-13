@@ -2,11 +2,12 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   color: white;
-  display: flex;
-  flex-direction: row;
-  padding: 7px 9px;
-  padding-right: 14px;
   border-radius: 8px;
+  position: relative;
+
+  #song {
+    width: 90%;
+  }
 
   &:hover {
     background: #2a2a2a;
@@ -35,6 +36,7 @@ export const Container = styled.div`
       position: absolute;
       top: 20%;
       left: 35%;
+      z-index: 1;
     }
   }
 
@@ -42,8 +44,7 @@ export const Container = styled.div`
     white-space: nowrap;
     display: flex;
     flex-direction: column;
-    margin-left: 12px;
-    flex: 1;
+    margin-left: 1em;
 
     .song-author {
       color: #a0a0a0;
@@ -51,11 +52,9 @@ export const Container = styled.div`
   }
 
   .song-like {
-    padding: 5px 20px;
-    align-self: center;
     svg {
       color: white;
-      display: none;
+      display: hidden;
     }
   }
 

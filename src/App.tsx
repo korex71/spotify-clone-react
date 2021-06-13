@@ -12,16 +12,19 @@ import Navbar from "./component/Navbar";
 import Topbar from "./component/Topbar";
 import Main from "./component/Main";
 
+import { useRef } from "react";
+
 export default function App() {
   const { selectedSong } = useContext(AppContext);
+  const mainRef = useRef(null)
 
   return (
     <>
       <GlobalStyle />
       <Router>
         <Navbar />
-        <Topbar />
-        <Main>
+        <Topbar mainRef={mainRef} />
+        <Main ref={mainRef}>
           <Switch>
             <Route path="/" component={Home} exact />
             <Route path="/library" component={Library} />

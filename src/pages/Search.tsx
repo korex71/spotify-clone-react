@@ -21,10 +21,22 @@ export default function Search() {
     )
   }
 
+  if(searchResults.length === 0){
+    return (
+      <div>
+        <div className="row">
+          <h3 className="text-center text-light m-3">
+            Comece pesquisando uma música!
+          </h3>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div>
       <div className="row">
-        <h3 className="text-center text-white ml-4">
+        <h3 className="text-center text-light ml-4">
           {searchResults && "Melhor resultado"}
         </h3>
         <div className="container-fluid mt-3 mb-5 list-videos">

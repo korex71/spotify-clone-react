@@ -2,13 +2,9 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   color: white;
-  display: flex;
-  position: relative;
-  flex-direction: column;
   padding: 18px;
   border-radius: 6px;
   background: #181818;
-  max-width: 25%;
 
   &:hover {
     background: #2a2a2a;
@@ -20,18 +16,20 @@ export const Container = styled.div`
     }
   }
 
+  div.song-info span:nth-child(2) {
+    border-radius: 20px;
+    letter-spacing: 1px;
+    font-weight: bolder;
+    background: #0e0c0c;
+  }
+
   .song-play {
-    position: absolute;
-    top: 70%;
-    left: 85%;
-    color: #fff;
     background-color: #1db954;
-    border-radius: 50%;
-    border: none;
     height: 40px;
+    align-self: center;
+    margin-right: 10px;
+    border-radius: 50%;
     width: 40px;
-    padding: 0;
-    font-size: 12px;
 
     svg {
       margin-left: 10px;
@@ -56,6 +54,7 @@ export const Container = styled.div`
     flex-direction: column;
     flex: 1;
     margin-top: 1em;
+    margin-left: 0.7em;
 
     .song-author {
       color: #a0a0a0;

@@ -2,6 +2,11 @@ import React from "react";
 import ArtistCard from "../../component/ArtistCard";
 
 function Home() {
+  
+  React.useEffect(() => {
+    console.log(window.scrollY)
+  }, [])
+
   return (
     <div>
       <h2 className="title mb-3">Tocado recentemente</h2>

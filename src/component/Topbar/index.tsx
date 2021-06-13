@@ -1,13 +1,16 @@
+import { MutableRefObject } from "react";
 import { useContext } from "react";
 import * as Feather from "react-feather";
 import { AppContext } from "../../contexts/AppContext";
 import { SearchWrapper, Bar as TopBar } from "./styles";
 
-function Topbar() {
+function Topbar({mainRef}: {mainRef: MutableRefObject<HTMLDivElement | null>}) {
   const { inputSearch, setInputSearch, handleSearch } = useContext(AppContext);
 
   return (
-    <TopBar>
+    <TopBar style={(mainRef.current && mainRef.current.scrollTop > 200) ? {
+      background: "#202020"
+    } : {}}>
       <header id="header" className="d-flex header position-relative">
         <div id="header-overlay" />
         <div className="icons-action-left d-flex">

@@ -45,6 +45,7 @@ interface IProps {
 
 export const AppContext = createContext({} as IContextData);
 
+
 export default function ContextProvider({ children }: IProps) {
   const [inputSearch, setInputSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -56,7 +57,7 @@ export default function ContextProvider({ children }: IProps) {
 
   const [audio, state, controls, ref] = useAudio({
     src: `${API_URL}/audio/${selectedSong.youtubeId}`,
-    autoPlay: true,
+    autoPlay: false,
   });
 
   function handleSearch() {
