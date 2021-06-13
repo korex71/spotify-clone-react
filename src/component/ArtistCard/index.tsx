@@ -10,7 +10,7 @@ function ArtistCard({ artist, imgUri }: ArtistCardProps) {
   const { setInputSearch, handleSearch } = useContext(AppContext);
 
   return (
-    <div className="col-lg-3 col-md-4 col-sm-6 mb-3">
+    <div className="col-lg-3 col-md-5 col-sm-10 mb-3">
       <div className="card">
         <img
           className="card-img-top rounded-circle mb-3"
