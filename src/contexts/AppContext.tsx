@@ -5,6 +5,7 @@ import React, {
   SetStateAction,
   useState,
   useContext,
+  useEffect,
 } from "react";
 import { useAudio, useEffectOnce } from "react-use";
 import {
@@ -36,6 +37,7 @@ interface IContextData {
   state: HTMLMediaState;
   controls: HTMLMediaControls;
   ref: React.MutableRefObject<HTMLAudioElement | null>;
+  isLoadingSearch: boolean;
 }
 interface IProps {
   children: ReactNode;
@@ -50,6 +52,8 @@ export default function ContextProvider({ children }: IProps) {
     {} as ISearchData
   );
   // const [storageSong, setStorageSong] = useState({} as ISearchData);
+  const [isLoadingSearch, setIsLoadingSearch] = useState<boolean>(false);
+
   const [audio, state, controls, ref] = useAudio({
     src: `${API_URL}/audio/${selectedSong.youtubeId}`,
     autoPlay: true,
@@ -57,14 +61,26 @@ export default function ContextProvider({ children }: IProps) {
 
   function handleSearch() {
     if (!inputSearch) return;
+    setIsLoadingSearch(true)
     api
       .get(`/search/${inputSearch}`)
       .then((res) => res.data)
       .then((data) => data.musics)
-      .then((musics) => setSearchResults(musics))
-      .catch((err) => console.warn(err));
+      .then((musics) => {
+        setIsLoadingSearch(false)
+        setSearchResults(musics)
+      })
+      .catch((err) => {
+        setIsLoadingSearch(false)
+        console.warn(err)
+      });
     console.log(inputSearch);
   }
+
+  useEffect(() => {
+    if(searchResults.length === 0) return;
+    // ** ? Redirect to search
+  }, [searchResults])
 
   useEffectOnce(() => {
     const song = localStorage.getItem("@App:song");
@@ -93,6 +109,7 @@ export default function ContextProvider({ children }: IProps) {
         state,
         controls,
         ref,
+        isLoadingSearch,
       }}
     >
       {audio}

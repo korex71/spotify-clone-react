@@ -1,9 +1,14 @@
+import { useContext } from "react";
+import * as Feather from "react-feather"
+import { AppContext } from "../../contexts/AppContext";
 interface ArtistCardProps {
   artist: string;
   imgUri: string;
 }
 
 function ArtistCard({ artist, imgUri }: ArtistCardProps) {
+  const { setInputSearch, handleSearch } = useContext(AppContext);
+
   return (
     <div className="col-lg-3 col-md-4 col-sm-6 mb-3">
       <div className="card">
@@ -20,10 +25,13 @@ function ArtistCard({ artist, imgUri }: ArtistCardProps) {
         <div className="btn-play">
           <button
             type="button"
-            onClick={() => null}
+            onClick={() => {
+              setInputSearch(artist);
+              handleSearch();
+            }}
             className="d-flex justify-content-center align-items-center"
           >
-            <i className="fas fa-play" />
+            <Feather.Play width="18" fill="white" />
           </button>
         </div>
       </div>

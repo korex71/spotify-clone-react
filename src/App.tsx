@@ -3,10 +3,11 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { AppContext } from "./contexts/AppContext";
 import GlobalStyle from "./App.global";
 
-import Player from "./component/Player";
 import Home from "./pages/Home";
 import Library from "./pages/Library";
 import Search from "./pages/Search";
+
+import Player from "./component/Player";
 import Navbar from "./component/Navbar";
 import Topbar from "./component/Topbar";
 import Main from "./component/Main";

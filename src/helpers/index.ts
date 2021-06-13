@@ -5,3 +5,5 @@ export const secondsToMinutes = (time: number) => {
 
   return `${minutes}:${formatedSeconds}`;
 };
+
+export const checkIsOnline = (): boolean => navigator.onLine;

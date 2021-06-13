@@ -1,13 +1,13 @@
 import { useContext } from "react";
 import * as Feather from "react-feather";
 import { AppContext } from "../../contexts/AppContext";
-import { SearchWrapper, Bar } from "./styles";
+import { SearchWrapper, Bar as TopBar } from "./styles";
 
 function Topbar() {
   const { inputSearch, setInputSearch, handleSearch } = useContext(AppContext);
 
   return (
-    <Bar>
+    <TopBar>
       <header id="header" className="d-flex header position-relative">
         <div id="header-overlay" />
         <div className="icons-action-left d-flex">
@@ -46,7 +46,7 @@ function Topbar() {
               <i className="fas fa-caret-down ml-2 mr-2" />
             </button>
             <div className="dropdown-menu mt-0 p-0">
-              <a href="#3" className="dropdown-item window-config">
+              <a href="#3" className="dropdown-item">
                 Configurações
               </a>
               <a href="#2" className="dropdown-item">
@@ -60,7 +60,7 @@ function Topbar() {
           </div>
         </div>
       </header>
-    </Bar>
+    </TopBar>
   );
 }
 
