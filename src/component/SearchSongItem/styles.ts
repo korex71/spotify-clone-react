@@ -5,8 +5,15 @@ export const Container = styled.div`
   border-radius: 8px;
   position: relative;
 
-  #song {
+  /* #song {
     width: 90%;
+  } */
+
+  .song-actions {
+    .duration {
+      min-width: 2em;
+      display: block;
+    }
   }
 
   &:hover {
@@ -25,6 +32,8 @@ export const Container = styled.div`
     .song-like {
       svg {
         display: block;
+        color: white;
+        opacity: 1 !important;
       }
     }
   }
@@ -42,8 +51,7 @@ export const Container = styled.div`
 
   .song-info {
     white-space: nowrap;
-    display: flex;
-    flex-direction: column;
+    flex: 1;
     margin-left: 1em;
 
     .song-author {

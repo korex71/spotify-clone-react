@@ -96,7 +96,6 @@ export const Container = styled.footer`
   }
 
   .play {
-    margin: -12px;
     padding: 0;
     font-size: 42px;
   }

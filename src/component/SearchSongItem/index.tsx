@@ -19,8 +19,7 @@ function SearchSongItem({ item }: SearchSongProps) {
   const thumbnail = item.thumbnailUrl || "";
 
   return (
-    <Container onClick={() => handleClick()} className="row py-1 px-2">
-      <div id="song" className="d-flex flex-row">
+    <Container onClick={() => handleClick()} className="flex-row row d-flex py-2 px-2">
         <div className="song-image">
           {(item.youtubeId === selectedSong.youtubeId && !state.paused) && (
             <Feather.Pause fill="white" width="15" style={{ display: "block" }} />
@@ -33,19 +32,18 @@ function SearchSongItem({ item }: SearchSongProps) {
              opacity: (item.youtubeId === selectedSong.youtubeId && state.paused) ? 1 : 0.8
            } : {}} />
         </div>
-        <div className="song-info">
+        <div className="song-info flex-column d-flex">
           <span title="song-title">{item.title}</span>
           <span className="song-author">{item.artist}</span>
         </div>
-      </div>
-      <div className="row align-items-center">
-        <div className="song-like col-auto">
-          <Feather.Heart width="16" strokeWidth="1" />
+        <div className="song-actions flex-row d-flex align-items-center">
+          <div className="song-like pr-4">
+            <Feather.Heart width="16" strokeWidth="1" />
+          </div>
+          <div className="duration">
+           <span className="song-duration">{time}</span>
+          </div>
         </div>
-        <div className="duration col-auto">
-         <span className="song-duration">{time}</span>
-        </div>
-      </div>
     </Container>
   );
 }

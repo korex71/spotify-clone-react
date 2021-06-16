@@ -5,14 +5,13 @@ export const Container = styled.div`
   padding: 18px;
   border-radius: 6px;
   background: #181818;
+  transition: 0.4s ease background;
 
   &:hover {
     background: #2a2a2a;
 
-    .song-image {
-      svg {
-        display: block;
-      }
+    .song-play {
+      opacity: 1;
     }
   }
 
@@ -25,21 +24,23 @@ export const Container = styled.div`
 
   .song-play {
     background-color: #1db954;
-    height: 40px;
     align-self: center;
-    margin-right: 10px;
+    margin-right: 15px;
     border-radius: 50%;
-    width: 40px;
+    opacity: 0;
+    transition: 0.3s ease all;
+    box-shadow: 22px 30px 35px -4px rgba(0, 0, 0, 0.5);
+    padding: 0.7em 0.8em;
 
-    svg {
-      margin-left: 10px;
-      margin-top: 8px;
+    &:hover {
+      padding: 0.9em 1em;
     }
   }
 
   .song-image {
-    position: relative;
-    width: max-content;
+    img {
+      box-shadow: 12px 15px 37px -6px rgba(0, 0, 0, 0.5);
+    }
 
     svg {
       display: none;

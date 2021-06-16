@@ -32,10 +32,11 @@ function SearchSongItem({ item }: SearchSongProps) {
         {
           selectedSong.youtubeId === item.youtubeId ?
             (state.paused
-            ? <Feather.Play width="20" fill="white" />
-            : <Feather.Pause width="20" fill="white" />)
-          : <Feather.Play width="20" fill="white"/>
+            ? <Feather.Play width="23" fill="white" />
+            : <Feather.Pause width="23" fill="white" />)
+          : <Feather.Play width="23" fill="white"/>
         }
+
       </div>
       </div>
     </Container>
