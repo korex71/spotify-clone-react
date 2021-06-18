@@ -14,6 +14,7 @@ import {
   HTMLMediaState,
 } from "react-use/lib/factory/createHTMLMediaHook";
 import api, { API_URL } from "../api/config";
+import Api from "../apix"
 
 export interface ISearchData {
   youtubeId: string;
@@ -25,6 +26,11 @@ export interface ISearchData {
     label: string;
     totalSeconds: number | null;
   };
+}
+interface IUserData {
+  id: string | null;
+  name: string | null;
+  photoURL: string | null;
 }
 interface IContextData {
   inputSearch: string;
@@ -38,10 +44,14 @@ interface IContextData {
   controls: HTMLMediaControls;
   ref: React.MutableRefObject<HTMLAudioElement | null>;
   isLoadingSearch: boolean;
+  setUser: Dispatch<SetStateAction<IUserData>>;
+  handleLoginGoogle: () => void;
+  user: IUserData;
 }
 interface IProps {
   children: ReactNode;
 }
+
 
 export const AppContext = createContext({} as IContextData);
 
@@ -52,6 +62,7 @@ export default function ContextProvider({ children }: IProps) {
   const [selectedSong, setSelectedSong] = useState<ISearchData>(
     {} as ISearchData
   );
+  const [user, setUser] = useState<IUserData>({} as IUserData)
   // const [storageSong, setStorageSong] = useState({} as ISearchData);
   const [isLoadingSearch, setIsLoadingSearch] = useState<boolean>(false);
 
@@ -76,6 +87,25 @@ export default function ContextProvider({ children }: IProps) {
         console.warn(err)
       });
     console.log(inputSearch);
+  }
+
+  async function handleLoginGoogle() {
+    let result = await Api.signInWithGoogle()
+
+    if(result){
+      console.log(result.user)
+      const userData = result.user;
+      
+      const parsedUser = {
+        id: userData ? userData.uid : null,
+        name: userData ? userData.displayName : null,
+        photoURL: userData ? userData.photoURL : null,
+      }
+
+      setUser(parsedUser)
+    }else{
+      alert("Error")
+    }
   }
 
   useEffect(() => {
@@ -111,6 +141,9 @@ export default function ContextProvider({ children }: IProps) {
         controls,
         ref,
         isLoadingSearch,
+        setUser,
+        user,
+        handleLoginGoogle
       }}
     >
       {audio}

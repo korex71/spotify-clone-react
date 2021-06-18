@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Library from "./pages/Library";
 import Search from "./pages/Search";
 
+import Login from "./component/Login"
 import Player from "./component/Player";
 import Navbar from "./component/Navbar";
 import Topbar from "./component/Topbar";
@@ -15,8 +16,14 @@ import Main from "./component/Main";
 import { useRef } from "react";
 
 export default function App() {
-  const { selectedSong } = useContext(AppContext);
+  const { selectedSong, user } = useContext(AppContext);
   const mainRef = useRef(null)
+
+  
+
+  if(user && !user.id){
+    return <Login />
+  }
 
   return (
     <>

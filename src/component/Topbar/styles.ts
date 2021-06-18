@@ -32,6 +32,12 @@ export const Bar = styled.div`
   z-index: 2;
   background-color: rgba(0, 0, 0, 0.4);
 
+  .user-image {
+    width: 32px;
+    /* height: 100%; */
+    border-radius: 50%;
+  }
+
   header {
     padding: 16px 48px 16px 32px;
   }

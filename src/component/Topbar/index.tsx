@@ -3,9 +3,16 @@ import { useContext } from "react";
 import * as Feather from "react-feather";
 import { AppContext } from "../../contexts/AppContext";
 import { SearchWrapper, Bar as TopBar } from "./styles";
+import Api from "../../apix"
+
+interface IUserGoogle {
+  id: string;
+  name: string;
+  photoUrl: string;
+}
 
 function Topbar({mainRef}: {mainRef: MutableRefObject<HTMLDivElement | null>}) {
-  const { inputSearch, setInputSearch, handleSearch } = useContext(AppContext);
+  const { inputSearch, setInputSearch, handleSearch, user } = useContext(AppContext);
 
   return (
     <TopBar style={(mainRef.current && mainRef.current.scrollTop > 200) ? {
@@ -44,8 +51,9 @@ function Topbar({mainRef}: {mainRef: MutableRefObject<HTMLDivElement | null>}) {
               className="d-flex align-items-center justify-content-center"
               data-toggle="dropdown"
             >
-              <Feather.User width="16" height="16" />
-              <span>Usuário</span>
+              {/* <Feather.User width="16" height="16" /> */}
+              <img src={user.photoURL || ""} alt="User" className="user-image" />
+              <span>{user.name || "User"}</span>
               <i className="fas fa-caret-down ml-2 mr-2" />
             </button>
             <div className="dropdown-menu mt-0 p-0">
