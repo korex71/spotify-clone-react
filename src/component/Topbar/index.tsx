@@ -3,13 +3,12 @@ import { useContext } from "react";
 import * as Feather from "react-feather";
 import { AppContext } from "../../contexts/AppContext";
 import { SearchWrapper, Bar as TopBar } from "./styles";
-import Api from "../../apix"
 
-interface IUserGoogle {
-  id: string;
-  name: string;
-  photoUrl: string;
-}
+// interface IUserGoogle {
+//   id: string;
+//   name: string;
+//   photoUrl: string;
+// }
 
 function Topbar({mainRef}: {mainRef: MutableRefObject<HTMLDivElement | null>}) {
   const { inputSearch, setInputSearch, handleSearch, user } = useContext(AppContext);

@@ -14,7 +14,7 @@ import {
   HTMLMediaState,
 } from "react-use/lib/factory/createHTMLMediaHook";
 import api, { API_URL } from "../api/config";
-import Api from "../apix"
+import {signInWithGoogle} from "../apix"
 
 export interface ISearchData {
   youtubeId: string;
@@ -90,7 +90,7 @@ export default function ContextProvider({ children }: IProps) {
   }
 
   async function handleLoginGoogle() {
-    let result = await Api.signInWithGoogle()
+    let result = await signInWithGoogle()
 
     if(result){
       console.log(result.user)
