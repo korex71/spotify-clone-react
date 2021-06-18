@@ -1,23 +1,19 @@
 
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { AppContext } from '../../contexts/AppContext';
 import { Container } from './styles';
 // import * as Feather from "react-feather"
-import ForgotPassword from '../forgotPassword';
+import { Link } from 'react-router-dom';
 
 function Login() {
   const {handleLoginGoogle} = useContext(AppContext);
-  const [forgotPassword, setForgotPassword] = useState(false);
-
-  if(forgotPassword)
-    return <ForgotPassword />
 
   return (
     <Container>
     <header>
         <a href="/">Sas</a> 
     </header>
-        <div className="container w-25">
+        <div className="container">
             <h2 className="loginhead">Para continuar, faça o login.</h2>
             <div className="fb-btn">
                 <button>Continuar com Facebook</button>
@@ -41,7 +37,7 @@ function Login() {
                 <span className="checkmark"></span>
                 <button>Log In</button>
             </div>
-            <a href="#forgot" onClick={() => setForgotPassword(true)}>Forgot your password?</a>
+            <Link to="/forgot">Forgot your password?</Link>
             <hr className="bar2"/>
             <h1>Don't have an account?</h1>
             <div className="signup-btn"><button>Inscrever-se</button></div>

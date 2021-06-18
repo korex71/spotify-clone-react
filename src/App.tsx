@@ -16,7 +16,7 @@ export default function App() {
   const { selectedSong, user } = useContext(AppContext);
 
   if(user && !user.id){
-    return <Redirect to="/login"/>
+    return <Redirect to="/signin"/>
   }
 
   return (

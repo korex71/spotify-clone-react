@@ -1,4 +1,3 @@
-import { MutableRefObject } from "react";
 import { useContext } from "react";
 import * as Feather from "react-feather";
 import { AppContext } from "../../contexts/AppContext";
