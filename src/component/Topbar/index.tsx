@@ -10,13 +10,11 @@ import { SearchWrapper, Bar as TopBar } from "./styles";
 //   photoUrl: string;
 // }
 
-function Topbar({mainRef}: {mainRef: MutableRefObject<HTMLDivElement | null>}) {
+function Topbar() {
   const { inputSearch, setInputSearch, handleSearch, user } = useContext(AppContext);
 
   return (
-    <TopBar style={(mainRef.current && mainRef.current.scrollTop > 200) ? {
-      background: "#202020"
-    } : {}}>
+    <TopBar>
       <header id="header" className="d-flex header position-relative">
         <div id="header-overlay" />
         <div className="icons-action-left d-flex">

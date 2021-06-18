@@ -2,7 +2,6 @@
 import { useContext, useState } from 'react';
 import { AppContext } from '../../contexts/AppContext';
 import { Container } from './styles';
-// import {Link} from "react-router-dom"
 // import * as Feather from "react-feather"
 import ForgotPassword from '../forgotPassword';
 
