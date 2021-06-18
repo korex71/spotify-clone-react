@@ -25,5 +25,12 @@ export const Container = styled.div`
     button {
       padding: 8px;
     }
+
+    button.back {
+      padding: 5px;
+      width: max-content;
+      background: transparent;
+      margin: 5px 0px;
+    }
   }
 `;

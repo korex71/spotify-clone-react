@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Container } from './styles';
+import {Link, useHistory} from "react-router-dom"
 
 function ForgotPassword() {
+  const history = useHistory()
 
   const [email, setEmail] = useState("");
 
@@ -24,7 +26,7 @@ function ForgotPassword() {
           Enviar email de recuperação
         </button>
 
-        <a href="/" className="pt-2 text-success">Voltar</a>
+        <button onClick={() => history.push("/")} className="pt-2 text-success back border border-dark rounded">Voltar</button>
       </div>
     </Container>
   );
