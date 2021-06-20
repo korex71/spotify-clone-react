@@ -18,6 +18,7 @@ export default function Player() {
   const [volumeIco, setVolumeIco] = useState(<Feather.Volume2 width="16" />);
   const [timeValue, setTimeValue] = useState(0);
   const [songPlaylist, setSongPlaylist] = useState({} as ISearchData[]);
+  const [lastVolumeValue, setLastVolumeValue] = useState(100);
 
   useEffect(() => {
     if (ref.current) {
@@ -86,6 +87,11 @@ export default function Player() {
       rgb(76,76,76) ${volumePercent}%, rgb(76,76,76) ${volumePercent}% )`,
     });
 
+    if(state.muted){
+      return setVolumeIco(<Feather.VolumeX width="16" />);
+
+    }
+
     if (volumePercent <= 20 && volumePercent > 0) {
       setVolumeIco(<Feather.Volume width="16" />);
     } else if (volumePercent >= 20 && volumePercent <= 60) {
@@ -110,9 +116,73 @@ export default function Player() {
     });
   };
 
+  const handleMute = () => {
+    console.log(lastVolumeValue)
+
+    if(state.volume > 0){
+
+    }
+
+    if(state.muted){
+      controls.unmute()
+      setVolumeBg({
+        background: `linear-gradient( to right, var(--green) ${lastVolumeValue}%, 
+        var(--green) ${lastVolumeValue}%, 
+        rgb(76,76,76) ${lastVolumeValue}%, rgb(76,76,76) ${lastVolumeValue}%)`,
+      });
+      setVolumeIco(<Feather.Volume2 width="16" />);
+
+      return controls.volume(lastVolumeValue / 100)
+    }
+
+    controls.mute()
+    setLastVolumeValue(state.volume * 100)
+
+    setVolumeBg({
+      background: `linear-gradient( to right, var(--green) 0%, 
+      var(--green) 0%, 
+      rgb(76,76,76) 0%, rgb(76,76,76) 0% )`,
+    });
+    setVolumeIco(<Feather.VolumeX width="16" />);
+
+    return controls.volume(0)
+
+  }
+
   const toggleSong = () => {
     state.paused ? controls.play() : controls.pause();
   };
+
+  // const setMediaSessionInfo = (info: ISearchData) => {
+  //   const title = info.title;
+  //   const artist = info.artist;
+  //   const album = "";
+  //   const thumbnail = info.thumbnailUrl;
+  
+  //   document.title = `${title} - ${artist}`;
+  
+  //   if ("mediaSession" in navigator) {
+  //     let media: INavigator = navigator
+  //     let windowSession: IWindow = window
+
+  //     windowSession.MediaMetadata({title: 'fuck'})
+
+  //     media.mediaSession.metadata = new window.MediaMetadata({
+  //       title,
+  //       artist,
+  //       album,
+  //       artwork: { src: thumbnail, sizes: "64x64", type: "image/jpeg" },
+  //     });
+  
+  //     media.mediaSession.setActionHandler("play", () => controls.play());
+  //     media.mediaSession.setActionHandler("pause", () => controls.pause());
+  //     media.mediaSession.setActionHandler(
+  //       "seekbackward",
+  //       () => controls.seek(state.time - 15)
+  //     );
+  //     media.mediaSession.setActionHandler("nexttrack", () => playNextSong());
+  //   }
+  // };
 
   return (
     <Wrapper className="d-flex align-items-center noselect">
@@ -220,6 +290,7 @@ export default function Player() {
             <button
               type="button"
               className="icon-right d-flex justify-content-center align-items-center"
+              onClick={handleMute}
             >
               {volumeIco}
             </button>

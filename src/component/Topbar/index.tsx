@@ -1,8 +1,7 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import * as Feather from "react-feather";
 import { AppContext } from "../../contexts/AppContext";
-import { SearchWrapper, Bar as TopBar } from "./styles";
-
+import { SearchWrapper, Bar as Container } from "./styles";
 // interface IUserGoogle {
 //   id: string;
 //   name: string;
@@ -11,9 +10,10 @@ import { SearchWrapper, Bar as TopBar } from "./styles";
 
 function Topbar() {
   const { inputSearch, setInputSearch, handleSearch, user } = useContext(AppContext);
+  const [dropdown, setDropdown] = useState(false);
 
   return (
-    <TopBar>
+    <Container dropdown={dropdown}>
       <header id="header" className="d-flex header position-relative">
         <div id="header-overlay" />
         <div className="icons-action-left d-flex">
@@ -40,19 +40,20 @@ function Topbar() {
             />
           </SearchWrapper>
         </div>
-        <div className="d-flex ml-auto">
-          <div className="dropdown menu ml-3">
+        <div>
+          <div className="dropdown menu">
             <button
               type="button"
               className="d-flex align-items-center justify-content-center"
               data-toggle="dropdown"
+              onClick={() => setDropdown(!dropdown)}
             >
+            <img src={user.photoURL || ""} alt="User" className="user-image" />
               {/* <Feather.User width="16" height="16" /> */}
-              <img src={user.photoURL || ""} alt="User" className="user-image" />
               <span>{user.name || "User"}</span>
-              <i className="fas fa-caret-down ml-2 mr-2" />
+              <Feather.ChevronDown width="16" className="ml-2"/>
             </button>
-            <div className="dropdown-menu mt-0 p-0">
+            <div className="dropdown-menu p-0">
               <a href="#3" className="dropdown-item">
                 Configurações
               </a>
@@ -67,7 +68,7 @@ function Topbar() {
           </div>
         </div>
       </header>
-    </TopBar>
+    </Container>
   );
 }
 

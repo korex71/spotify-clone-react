@@ -3,15 +3,26 @@ import { useContext } from 'react';
 import { AppContext } from '../../contexts/AppContext';
 import { Container } from './styles';
 // import * as Feather from "react-feather"
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 function Login() {
-  const {handleLoginGoogle} = useContext(AppContext);
+  const {handleLoginGoogle, setUser} = useContext(AppContext);
+  const history = useHistory()
+
+  const fakeLogin = () => {
+      setUser({
+          id: "1",
+          name: "Kore",
+          photoURL: "https://i.scdn.co/image/d9a875c37277c35b94c60c00d2cd256db098505d"
+      })
+
+      return history.push("/")
+  }
 
   return (
     <Container>
     <header>
-        <a href="/">Sas</a> 
+        <span>Songr.ly</span> 
     </header>
         <div className="container">
             <h2 className="loginhead">Para continuar, faça o login.</h2>
@@ -35,7 +46,7 @@ function Login() {
             <div className="login">
                 <input type="checkbox" name="remember-me" /><label htmlFor="remember-me">Remember Me</label>
                 <span className="checkmark"></span>
-                <button>Log In</button>
+                <button onClick={fakeLogin}>Log In</button>
             </div>
             <Link to="/forgot">Forgot your password?</Link>
             <hr className="bar2"/>
