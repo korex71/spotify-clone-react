@@ -54,6 +54,7 @@
     ]
   },
   "devDependencies": {
+    "@types/wicg-mediasession": "^1.1.0",
     "ytdl-core": "^4.8.2",
     "ytsr": "^3.5.0"
   }

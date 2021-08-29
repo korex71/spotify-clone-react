@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import * as Feather from "react-feather"
+import * as Feather from "react-feather";
 import { AppContext } from "../../contexts/AppContext";
 interface ArtistCardProps {
   artist: string;
@@ -25,7 +25,8 @@ function ArtistCard({ artist, imgUri }: ArtistCardProps) {
         <div className="btn-play">
           <button
             type="button"
-            onClick={() => {
+            onClick={(ev) => {
+              console.log(ev);
               setInputSearch(artist);
               handleSearch();
             }}

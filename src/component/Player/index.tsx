@@ -4,12 +4,21 @@ import { AppContext, ISearchData } from "../../contexts/AppContext";
 import { Wrapper, Container } from "./styles";
 import { secondsToMinutes } from "../../helpers";
 import * as Icon from "../Icons";
-
+import { addNewSong } from "../../apix";
 import api from "../../api/config";
 
+import Playlist from "../../helpers/playlist";
+
 export default function Player() {
-  const { searchResults, selectedSong, setSelectedSong, state, controls, ref } =
-    useContext(AppContext);
+  const {
+    searchResults,
+    selectedSong,
+    setSelectedSong,
+    state,
+    controls,
+    ref,
+    user,
+  } = useContext(AppContext);
 
   const [currentTime, setCurrentTime] = useState("0:00");
   const [volumeBg, setVolumeBg] = useState({});
@@ -17,7 +26,8 @@ export default function Player() {
   const [duration, setDuration] = useState("");
   const [volumeIco, setVolumeIco] = useState(<Feather.Volume2 width="16" />);
   const [timeValue, setTimeValue] = useState(0);
-  const [songPlaylist, setSongPlaylist] = useState({} as ISearchData[]);
+  const [shuffle, setShuffle] = useState(false);
+  const [songPlaylist, setSongPlaylist] = useState([] as ISearchData[]);
   const [lastVolumeValue, setLastVolumeValue] = useState(100);
 
   useEffect(() => {
@@ -37,7 +47,7 @@ export default function Player() {
     let percent = (state.time / state.duration) * 100;
     setTimeValue(state.time);
     setSliderBg({
-      background: `linear-gradient( to right, var(--green) ${percent}%, 
+      background: `linear-gradient(to right, var(--green) ${percent}%, 
       var(--green) ${percent}%, 
       rgb(76,76,76) ${percent}%, rgb(76,76,76) ${percent}% )`,
     });
@@ -53,43 +63,89 @@ export default function Player() {
     document.title = selectedSong.title;
     localStorage.setItem("@App:song", JSON.stringify(selectedSong));
 
-    console.log(selectedSong.youtubeId);
-  }, [selectedSong]);
+    // const title = selectedSong.title;
+    // const artist = selectedSong.artist;
+    // const album = "";
+    // const thumbnail = selectedSong.thumbnailUrl;
 
-  const playNextSong = () => {
-    if (songPlaylist && Object.keys(songPlaylist).length === 0) {
-      console.log(songPlaylist);
-      // Request for simillar songs and play.
-      api
-        .get(`/simillar/${selectedSong.youtubeId}`)
-        .then((res) => res.data)
-        .then((data) => data.musics)
-        .then((songs) => {
-          const firstSong = songs[0];
-          const list = songs.slice(1);
-          setSongPlaylist(list);
-          setSelectedSong(firstSong);
-        })
-        .catch((err) => console.warn(err));
-    } else {
-      const song = songPlaylist[0];
-      setSongPlaylist(songPlaylist.slice(1));
-      setSelectedSong(song);
+    // document.title = `${title} - ${artist}`;
+
+    // if (navigator.hasOwnProperty("mediaSession")) {
+    //   // @ts-ignore
+    //   navigator.mediaSession.metadata = new window.MediaMetadata({
+    //     title,
+    //     artist,
+    //     album,
+    //     artwork: { src: thumbnail },
+    //   });
+
+    //   navigator.mediaSession.setActionHandler("play", () => controls.play());
+    //   navigator.mediaSession.setActionHandler("pause", () => controls.pause());
+    //   navigator.mediaSession.setActionHandler("seekbackward", () =>
+    //     controls.seek(state.time - 15)
+    //   );
+    //   navigator.mediaSession.setActionHandler("nexttrack", () =>
+    //     playNextSong()
+    //   );
+    // }
+
+    // setMediaSessionInfo(selectedSong);
+  }, [selectedSong]); //eslint-disable-line
+
+  const handleAddSongToLibrary = () => {
+    if (!user || !user.id) return;
+
+    console.log(user.id, selectedSong);
+
+    addNewSong(user.id, selectedSong);
+  };
+
+  const playLastSong = () => {
+    console.log(Playlist.playlist);
+
+    const song = Playlist.getLastSong();
+
+    if (!song) {
+      return;
     }
+
+    setSelectedSong(song);
+  };
+
+  const playNextSong = async () => {
+    console.log(Playlist.playlist);
+
+    const song = Playlist.getNextSong();
+
+    if (!song) {
+      return await Playlist.createPlaylist(selectedSong.youtubeId).then(
+        (song) => {
+          setSelectedSong(song);
+          setSongPlaylist(Playlist.playlist);
+        }
+      );
+    }
+
+    setSelectedSong(song);
+
+    // const song = songPlaylist[0];
+    // setSongPlaylist(songPlaylist.slice(1));
+    // setSelectedSong(song);
   };
 
   const handleVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
     controls.volume(e.target.valueAsNumber / 100);
     const volumePercent = e.target.valueAsNumber;
     setVolumeBg({
-      background: `linear-gradient( to right, var(--green) ${volumePercent}%, 
+      background: `linear-gradient( to right, 
       var(--green) ${volumePercent}%, 
-      rgb(76,76,76) ${volumePercent}%, rgb(76,76,76) ${volumePercent}% )`,
+      var(--green) ${volumePercent}%, 
+      rgb(76,76,76) ${volumePercent}%, 
+      rgb(76,76,76) ${volumePercent}% )`,
     });
 
-    if(state.muted){
+    if (state.muted) {
       return setVolumeIco(<Feather.VolumeX width="16" />);
-
     }
 
     if (volumePercent <= 20 && volumePercent > 0) {
@@ -117,14 +173,20 @@ export default function Player() {
   };
 
   const handleMute = () => {
-    console.log(lastVolumeValue)
+    if (state.volume > 0 && !state.muted) {
+      controls.unmute();
+      setVolumeBg({
+        background: `linear-gradient( to right, var(--green) ${state.volume}%, 
+        var(--green) ${state.volume}%, 
+        rgb(76,76,76) ${state.volume}%, rgb(76,76,76) ${state.volume}%)`,
+      });
+      setVolumeIco(<Feather.Volume2 width="16" />);
 
-    if(state.volume > 0){
-
+      return;
     }
 
-    if(state.muted){
-      controls.unmute()
+    if (state.muted) {
+      controls.unmute();
       setVolumeBg({
         background: `linear-gradient( to right, var(--green) ${lastVolumeValue}%, 
         var(--green) ${lastVolumeValue}%, 
@@ -132,11 +194,11 @@ export default function Player() {
       });
       setVolumeIco(<Feather.Volume2 width="16" />);
 
-      return controls.volume(lastVolumeValue / 100)
+      return controls.volume(lastVolumeValue / 100);
     }
 
-    controls.mute()
-    setLastVolumeValue(state.volume * 100)
+    controls.mute();
+    setLastVolumeValue(state.volume * 100);
 
     setVolumeBg({
       background: `linear-gradient( to right, var(--green) 0%, 
@@ -145,44 +207,12 @@ export default function Player() {
     });
     setVolumeIco(<Feather.VolumeX width="16" />);
 
-    return controls.volume(0)
-
-  }
+    return controls.volume(0);
+  };
 
   const toggleSong = () => {
     state.paused ? controls.play() : controls.pause();
   };
-
-  // const setMediaSessionInfo = (info: ISearchData) => {
-  //   const title = info.title;
-  //   const artist = info.artist;
-  //   const album = "";
-  //   const thumbnail = info.thumbnailUrl;
-  
-  //   document.title = `${title} - ${artist}`;
-  
-  //   if ("mediaSession" in navigator) {
-  //     let media: INavigator = navigator
-  //     let windowSession: IWindow = window
-
-  //     windowSession.MediaMetadata({title: 'fuck'})
-
-  //     media.mediaSession.metadata = new window.MediaMetadata({
-  //       title,
-  //       artist,
-  //       album,
-  //       artwork: { src: thumbnail, sizes: "64x64", type: "image/jpeg" },
-  //     });
-  
-  //     media.mediaSession.setActionHandler("play", () => controls.play());
-  //     media.mediaSession.setActionHandler("pause", () => controls.pause());
-  //     media.mediaSession.setActionHandler(
-  //       "seekbackward",
-  //       () => controls.seek(state.time - 15)
-  //     );
-  //     media.mediaSession.setActionHandler("nexttrack", () => playNextSong());
-  //   }
-  // };
 
   return (
     <Wrapper className="d-flex align-items-center noselect">
@@ -204,6 +234,7 @@ export default function Player() {
             <div
               className="d-flex icon justify-content-center align-items-center"
               id="heart"
+              onClick={handleAddSongToLibrary}
             >
               <Feather.Heart color="white" width="16" height="24" />
             </div>
@@ -214,12 +245,14 @@ export default function Player() {
                 <button
                   type="button"
                   className="icon d-flex justify-content-center align-items-center"
+                  onClick={() => null}
                 >
                   <Feather.Shuffle width="16" height="24" />
                 </button>
                 <button
                   type="button"
                   className="icon d-flex justify-content-center align-items-center"
+                  onClick={() => playLastSong()}
                 >
                   <Feather.ChevronLeft width="18" height="16" strokeWidth="3" />
                 </button>

@@ -1,16 +1,22 @@
 import { useContext, useState } from "react";
+import { SearchWrapper, Bar as Container } from "./styles";
 import * as Feather from "react-feather";
 import { AppContext } from "../../contexts/AppContext";
-import { SearchWrapper, Bar as Container } from "./styles";
-// interface IUserGoogle {
-//   id: string;
-//   name: string;
-//   photoUrl: string;
-// }
+import { useHistory } from "react-router-dom";
 
 function Topbar() {
-  const { inputSearch, setInputSearch, handleSearch, user } = useContext(AppContext);
+  const { inputSearch, setInputSearch, handleSearch, user, setUser } =
+    useContext(AppContext);
+
   const [dropdown, setDropdown] = useState(false);
+
+  const history = useHistory();
+
+  const handleLogout = () => {
+    setUser(null);
+
+    history.push("/");
+  };
 
   return (
     <Container dropdown={dropdown}>
@@ -48,10 +54,14 @@ function Topbar() {
               data-toggle="dropdown"
               onClick={() => setDropdown(!dropdown)}
             >
-            <img src={user.photoURL || ""} alt="User" className="user-image" />
+              <img
+                src={(user && user.photoURL) || ""}
+                alt="User"
+                className="user-image"
+              />
               {/* <Feather.User width="16" height="16" /> */}
-              <span>{user.name || "User"}</span>
-              <Feather.ChevronDown width="16" className="ml-2"/>
+              <span>{(user && user.name) || "User"}</span>
+              <Feather.ChevronDown width="16" className="ml-2" />
             </button>
             <div className="dropdown-menu p-0">
               <a href="#3" className="dropdown-item">
@@ -61,7 +71,11 @@ function Topbar() {
                 Perfil
               </a>
               <div className="dropdown-divider" />
-              <a href="#1" className="dropdown-item">
+              <a
+                href="#logout"
+                onClick={handleLogout}
+                className="dropdown-item"
+              >
                 Sair
               </a>
             </div>
