@@ -14,7 +14,7 @@ import {
   HTMLMediaState,
 } from "react-use/lib/factory/createHTMLMediaHook";
 import api, { API_URL } from "../api/config";
-import {signInWithGoogle} from "../apix"
+import { signInWithGoogle } from "../apix";
 
 export interface ISearchData {
   youtubeId: string;
@@ -27,7 +27,7 @@ export interface ISearchData {
     totalSeconds: number | null;
   };
 }
-interface IUserData {
+export interface IUserData {
   id: string | null;
   name: string | null;
   photoURL: string | null;
@@ -44,74 +44,99 @@ interface IContextData {
   controls: HTMLMediaControls;
   ref: React.MutableRefObject<HTMLAudioElement | null>;
   isLoadingSearch: boolean;
-  setUser: Dispatch<SetStateAction<IUserData>>;
-  handleLoginGoogle: () => void;
-  user: IUserData;
+  setUser: Dispatch<SetStateAction<IUserData | null>>;
+  handleLoginGoogle: () => Promise<void>;
+  setUserOnStorage: (user: IUserData) => void;
+  getUserFromStorage: () => IUserData | null;
+  user: IUserData | null;
 }
 interface IProps {
   children: ReactNode;
 }
 
-
 export const AppContext = createContext({} as IContextData);
-
 
 export default function ContextProvider({ children }: IProps) {
   const [inputSearch, setInputSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [selectedSong, setSelectedSong] = useState<ISearchData>(
-    {} as ISearchData
-  );
-  const [user, setUser] = useState<IUserData>({} as IUserData)
+  const [selectedSong, setSelectedSong] = useState({} as ISearchData);
+  const [user, setUser] = useState({} as IUserData | null);
+
   // const [storageSong, setStorageSong] = useState({} as ISearchData);
   const [isLoadingSearch, setIsLoadingSearch] = useState<boolean>(false);
 
   const [audio, state, controls, ref] = useAudio({
     src: `${API_URL}/audio/${selectedSong.youtubeId}`,
-    autoPlay: false,
+    autoPlay: true,
   });
 
   function handleSearch() {
     if (!inputSearch) return;
-    setIsLoadingSearch(true)
+    setIsLoadingSearch(true);
     api
       .get(`/search/${inputSearch}`)
       .then((res) => res.data)
       .then((data) => data.musics)
       .then((musics) => {
-        setIsLoadingSearch(false)
-        setSearchResults(musics)
+        setIsLoadingSearch(false);
+        setSearchResults(musics);
       })
       .catch((err) => {
-        setIsLoadingSearch(false)
-        console.warn(err)
+        setIsLoadingSearch(false);
+        console.warn(err);
       });
     console.log(inputSearch);
   }
 
-  async function handleLoginGoogle() {
-    let result = await signInWithGoogle()
+  function getUserFromStorage(): IUserData | null {
+    const account = localStorage.getItem("@App:account");
 
-    if(result){
-      console.log(result.user)
+    if (!account) return null;
+
+    try {
+      const user: IUserData = JSON.parse(account);
+
+      return user as IUserData;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
+
+  function setUserOnStorage(user: IUserData) {
+    try {
+      const account = JSON.stringify(user);
+
+      return localStorage.setItem("@App:account", account);
+    } catch (error) {
+      return console.error(error);
+    }
+  }
+
+  async function handleLoginGoogle() {
+    let result = await signInWithGoogle();
+
+    if (result) {
+      console.log(result.user);
       const userData = result.user;
-      
+
       const parsedUser = {
         id: userData ? userData.uid : null,
         name: userData ? userData.displayName : null,
         photoURL: userData ? userData.photoURL : null,
-      }
+      };
 
-      setUser(parsedUser)
-    }else{
-      alert("Error")
+      setUser(parsedUser);
+      setUserOnStorage(parsedUser);
+    } else {
+      alert("Error");
     }
   }
 
   useEffect(() => {
-    if(searchResults.length === 0) return;
+    if (searchResults.length === 0) return;
     // ** ? Redirect to search
-  }, [searchResults])
+  }, [searchResults]);
 
   useEffectOnce(() => {
     const song = localStorage.getItem("@App:song");
@@ -120,7 +145,7 @@ export default function ContextProvider({ children }: IProps) {
       try {
         const json = JSON.parse(song);
         setSelectedSong(json);
-        // setStorageSong(json);
+        // setStorageSong(json);D
       } catch (error) {
         console.warn(error);
       }
@@ -143,7 +168,9 @@ export default function ContextProvider({ children }: IProps) {
         isLoadingSearch,
         setUser,
         user,
-        handleLoginGoogle
+        handleLoginGoogle,
+        setUserOnStorage,
+        getUserFromStorage,
       }}
     >
       {audio}
