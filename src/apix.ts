@@ -6,13 +6,15 @@ import config from "./firebaseConfig";
 
 import { ISearchData } from "./contexts/AppContext";
 
+import { songs as useSongs } from "./helpers/localStorage";
+
 const app = firebase.initializeApp(config);
 
 export const db = app.firestore();
 
 interface IInitialSongStorage {
   userId: string;
-  songs: ISearchData;
+  songs: ISearchData[];
 }
 
 async function signInWithGoogle() {
@@ -22,7 +24,7 @@ async function signInWithGoogle() {
 }
 
 async function addNewSong(userId: string, songs: ISearchData) {
-  const data = {
+  const data: IInitialSongStorage = {
     userId,
     songs: [songs],
   };
@@ -33,33 +35,49 @@ async function addNewSong(userId: string, songs: ISearchData) {
 
   if (!doc.exists) {
     const document = await dbCollection.set(data);
+    // Create first document
     console.log(document);
-  } else {
-    const document = doc.data();
 
-    if (document) {
-      let dbSongs: ISearchData[] = document.songs;
-
-      if (dbSongs.find((song) => song.youtubeId === songs.youtubeId)) {
-        // Song already exists
-        return;
-      }
-
-      const inserted = await dbCollection.update({
-        songs: [...dbSongs, songs],
-      });
-
-      console.log(inserted);
-    }
+    return;
   }
 
-  return;
+  // Get Document and update with new song
+  const document = doc.data();
 
-  const res = await db.collection("users").doc(userId).update(data);
+  if (document) {
+    let dbSongs: ISearchData[] = document.songs;
 
-  console.log(res);
+    if (dbSongs.find((song) => song.youtubeId === songs.youtubeId)) {
+      // Song already exists
+      return;
+    }
+
+    const inserted = await dbCollection.update({
+      songs: [...dbSongs, songs],
+    });
+
+    console.log(inserted);
+  }
 }
 
-async function getUserLibrary() {}
+async function getUserLibrary(userId: string): Promise<ISearchData[] | null> {
+  const dbCollection = db.collection("users").doc(userId);
 
-export { signInWithGoogle, addNewSong };
+  const doc = await dbCollection.get();
+
+  const document = doc.data();
+
+  if (!document) return null;
+
+  let songs: ISearchData[] = document.songs;
+
+  if (!songs) return null;
+
+  const data = useSongs.addSongsFromDatabase(songs);
+
+  if (!data) return null;
+
+  return data;
+}
+
+export { signInWithGoogle, addNewSong, getUserLibrary };

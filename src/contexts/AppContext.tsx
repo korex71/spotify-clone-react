@@ -15,6 +15,7 @@ import {
 } from "react-use/lib/factory/createHTMLMediaHook";
 import api, { API_URL } from "../api/config";
 import { signInWithGoogle } from "../apix";
+import { songs as useSongs } from "../helpers/localStorage";
 
 export interface ISearchData {
   youtubeId: string;
@@ -47,8 +48,10 @@ interface IContextData {
   setUser: Dispatch<SetStateAction<IUserData | null>>;
   handleLoginGoogle: () => Promise<void>;
   setUserOnStorage: (user: IUserData) => void;
-  getUserFromStorage: () => IUserData | null;
+  getUserFromStorage: () => Promise<IUserData | null>;
   user: IUserData | null;
+  userSongs: ISearchData[] | null;
+  setUserSongs: Dispatch<SetStateAction<ISearchData[] | null>>;
 }
 interface IProps {
   children: ReactNode;
@@ -61,7 +64,9 @@ export default function ContextProvider({ children }: IProps) {
   const [searchResults, setSearchResults] = useState([]);
   const [selectedSong, setSelectedSong] = useState({} as ISearchData);
   const [user, setUser] = useState({} as IUserData | null);
-
+  const [userSongs, setUserSongs] = useState<ISearchData[] | null>(
+    [] as ISearchData[]
+  );
   // const [storageSong, setStorageSong] = useState({} as ISearchData);
   const [isLoadingSearch, setIsLoadingSearch] = useState<boolean>(false);
 
@@ -79,6 +84,7 @@ export default function ContextProvider({ children }: IProps) {
       .then((data) => data.musics)
       .then((musics) => {
         setIsLoadingSearch(false);
+        console.log(musics);
         setSearchResults(musics);
       })
       .catch((err) => {
@@ -88,13 +94,19 @@ export default function ContextProvider({ children }: IProps) {
     console.log(inputSearch);
   }
 
-  function getUserFromStorage(): IUserData | null {
+  async function getUserFromStorage(): Promise<IUserData | null> {
     const account = localStorage.getItem("@App:account");
 
     if (!account) return null;
 
     try {
       const user: IUserData = JSON.parse(account);
+
+      const songs = await useSongs.getSongsFromDatabase(user);
+
+      if (songs) {
+        setUserSongs(songs);
+      }
 
       return user as IUserData;
     } catch (error) {
@@ -134,7 +146,6 @@ export default function ContextProvider({ children }: IProps) {
   }
 
   useEffect(() => {
-    if (searchResults.length === 0) return;
     // ** ? Redirect to search
   }, [searchResults]);
 
@@ -171,6 +182,8 @@ export default function ContextProvider({ children }: IProps) {
         handleLoginGoogle,
         setUserOnStorage,
         getUserFromStorage,
+        userSongs,
+        setUserSongs,
       }}
     >
       {audio}

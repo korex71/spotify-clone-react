@@ -10,18 +10,18 @@ export default function Search() {
 
   useEffect(() => {
     console.log(navigator.onLine ? "online" : "offline");
-  }, [navigator.onLine]) // eslint-disable-line
+  }, [navigator.onLine]); // eslint-disable-line
 
-  if(!navigator.onLine){
+  if (!navigator.onLine) {
     return (
       <div className="d-flex justify-content-center align-items-center h-100 flex-column">
-            <Feather.WifiOff color="white" width="30" height="30" />
-            <span className="text-light pt-3">Sem conexão à internet.</span>
+        <Feather.WifiOff color="white" width="30" height="30" />
+        <span className="text-light pt-3">Sem conexão à internet.</span>
       </div>
-    )
+    );
   }
 
-  if(searchResults.length === 0){
+  if (searchResults && searchResults.length === 0) {
     return (
       <div>
         <div className="row">
@@ -30,7 +30,7 @@ export default function Search() {
           </h3>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -40,43 +40,45 @@ export default function Search() {
           {searchResults && "Melhor resultado"}
         </h3>
         <div className="container-fluid mt-3 mb-5 list-videos">
-          {(searchResults.length !== 0 && !isLoadingSearch) && (
+          {searchResults.length !== 0 && !isLoadingSearch && (
             <BestResultCard item={searchResults[0]} />
-          )
-        }
-        {
-          isLoadingSearch && <SkeletonLoader block width={'25%'} height={200} background="#202020" />
-        }
+          )}
+          {isLoadingSearch && (
+            <SkeletonLoader
+              block
+              width={"25%"}
+              height={200}
+              background="#202020"
+            />
+          )}
         </div>
         <h3 className="text-center text-white ml-4">
           {searchResults && "Músicas"}
         </h3>
       </div>
       <div className="container-fluid mt-3 mb-5 list-videos">
-        {(searchResults.length !== 0 && !isLoadingSearch) &&
+        {searchResults.length !== 0 &&
+          !isLoadingSearch &&
           searchResults.map((item, key) => {
             return <SearchSongItem key={key} item={item} />;
-          })
-        }
-        {
-          isLoadingSearch && (
-            <>
+          })}
+        {isLoadingSearch && (
+          <>
             <SkeletonLoader block height={60} background="#202020" />
-            <br/>
+            <br />
             <SkeletonLoader block height={60} background="#202020" />
-            <br/>
+            <br />
             <SkeletonLoader block height={60} background="#202020" />
-            <br/>
+            <br />
             <SkeletonLoader block height={60} background="#202020" />
-            <br/>
+            <br />
             <SkeletonLoader block height={60} background="#202020" />
-            <br/>
+            <br />
             <SkeletonLoader block height={60} background="#202020" />
-            <br/>
+            <br />
             <SkeletonLoader block height={60} background="#202020" />
           </>
-          )
-        }
+        )}
       </div>
     </div>
   );

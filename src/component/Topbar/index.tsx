@@ -14,8 +14,9 @@ function Topbar() {
 
   const handleLogout = () => {
     setUser(null);
+    localStorage.removeItem("@App:account");
 
-    history.push("/");
+    history.push("/signin");
   };
 
   return (

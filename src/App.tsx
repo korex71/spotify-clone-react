@@ -26,11 +26,13 @@ export default function App() {
   if (user && !user.id) {
     const account = getUserFromStorage();
 
-    if (!account) {
-      return <Redirect to="/signin" />;
-    }
+    account.then((data) => {
+      if (!data) {
+        return <Redirect to="/signin" />;
+      }
 
-    setUser(account);
+      setUser(data);
+    });
   }
 
   return (

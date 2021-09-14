@@ -4,6 +4,7 @@ import { Container } from "./styles";
 // import * as Feather from "react-feather"
 import { IUserData } from "../../contexts/AppContext";
 import { Link, useHistory } from "react-router-dom";
+import * as Feather from "react-feather";
 
 function Login() {
   const {
@@ -18,7 +19,10 @@ function Login() {
   useEffect(() => {
     if (user && !user.id) {
       const account = getUserFromStorage();
-      if (account && account.id) history.push("/");
+
+      account.then((data) => {
+        if (data && data.id) history.push("/");
+      });
     }
   }, [user]);
 
@@ -51,7 +55,11 @@ function Login() {
   return (
     <Container>
       <header>
-        <span>Songr.ly</span>
+        {/* <span>Songr.ly</span> */}
+        <img
+          alt="logo"
+          src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_CMYK_Green.png"
+        />
       </header>
       <div className="container">
         <h2 className="loginhead">Para continuar, faça o login.</h2>
@@ -63,6 +71,10 @@ function Login() {
             className="bg-light border-dark border text-dark"
             onClick={googleLoginAuth}
           >
+            <img
+              src="https://img1.gratispng.com/20180425/fsq/kisspng-google-logo-gooole-5ae067e09a1dc8.0489792815246560966313.jpg"
+              alt=""
+            />
             Continuar com Google
           </button>
         </div>
